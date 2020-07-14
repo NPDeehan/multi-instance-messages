@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.1.0">
+  <bpmn:process id="Multi-Instance-Message" name="Multi-Instance Message" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_1fp17al</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1fp17al" sourceRef="StartEvent_1" targetRef="Activity_0ldcbub" />
+    <bpmn:endEvent id="EndEvent_0x6ir2l">
+      <bpmn:incoming>Flow_0tpwo0t</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:subProcess id="Activity_0vidiik">
+      <bpmn:incoming>Flow_0fom4xt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0tpwo0t</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="doctors" camunda:elementVariable="doctor" />
+      <bpmn:startEvent id="Event_0cdbc80">
+        <bpmn:outgoing>Flow_0ubmgho</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_0ubmgho" sourceRef="Event_0cdbc80" targetRef="Activity_0tdkoqo" />
+      <bpmn:endEvent id="Event_15qzlra">
+        <bpmn:incoming>Flow_0phiw1h</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1iq05t0" sourceRef="Activity_0tdkoqo" targetRef="Activity_00t4744" />
+      <bpmn:receiveTask id="Activity_0tdkoqo" name="TARDIS has Arrived" messageRef="Message_0jj10kq">
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="doctor">
+              <camunda:script scriptFormat="javascript">execution.getVariable('doctor');</camunda:script>
+            </camunda:inputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0ubmgho</bpmn:incoming>
+        <bpmn:outgoing>Flow_1iq05t0</bpmn:outgoing>
+      </bpmn:receiveTask>
+      <bpmn:sequenceFlow id="Flow_0phiw1h" sourceRef="Activity_00t4744" targetRef="Event_15qzlra" />
+      <bpmn:userTask id="Activity_00t4744" name="Call Companion">
+        <bpmn:incoming>Flow_1iq05t0</bpmn:incoming>
+        <bpmn:outgoing>Flow_0phiw1h</bpmn:outgoing>
+      </bpmn:userTask>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_0tpwo0t" sourceRef="Activity_0vidiik" targetRef="EndEvent_0x6ir2l" />
+    <bpmn:sequenceFlow id="Flow_0n3p774" sourceRef="Activity_0ldcbub" targetRef="Activity_0zdeqjl" />
+    <bpmn:serviceTask id="Activity_0ldcbub" name="Create List of  Doctors" camunda:delegateExpression="#{createDoctorList}">
+      <bpmn:incoming>SequenceFlow_1fp17al</bpmn:incoming>
+      <bpmn:outgoing>Flow_0n3p774</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0fom4xt" sourceRef="Activity_0zdeqjl" targetRef="Activity_0vidiik" />
+    <bpmn:sendTask id="Activity_0zdeqjl" name="Call a TARDIS for Each Doctor" camunda:delegateExpression="#{callTardis}">
+      <bpmn:incoming>Flow_0n3p774</bpmn:incoming>
+      <bpmn:outgoing>Flow_0fom4xt</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="doctors" camunda:elementVariable="doctor" />
+    </bpmn:sendTask>
+    <bpmn:textAnnotation id="TextAnnotation_1venfig">
+      <bpmn:text>Generates a List of strings, each is a name of a doctor</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_159diyy" sourceRef="Activity_0ldcbub" targetRef="TextAnnotation_1venfig" />
+    <bpmn:textAnnotation id="TextAnnotation_011ysv6">
+      <bpmn:text>For each doctor we send a message which starts the Call Tardis Process</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0urhv1e" sourceRef="Activity_0zdeqjl" targetRef="TextAnnotation_011ysv6" />
+    <bpmn:textAnnotation id="TextAnnotation_1tpnx91">
+      <bpmn:text>We use the list to start an instance of this sub process to wait for all the TARDIS's we've called</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_07snpf0" sourceRef="Activity_0vidiik" targetRef="TextAnnotation_1tpnx91" />
+  </bpmn:process>
+  <bpmn:message id="Message_0jj10kq" name="TARDIS" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Multi-Instance-Message">
+      <bpmndi:BPMNShape id="TextAnnotation_1venfig_di" bpmnElement="TextAnnotation_1venfig">
+        <dc:Bounds x="240" y="130" width="100.00000393944642" height="67.12564543889845" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_011ysv6_di" bpmnElement="TextAnnotation_011ysv6">
+        <dc:Bounds x="370" y="124" width="100.00000393944642" height="80.89500860585198" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1tpnx91_di" bpmnElement="TextAnnotation_1tpnx91">
+        <dc:Bounds x="540" y="80" width="190" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0fom4xt_di" bpmnElement="Flow_0fom4xt">
+        <di:waypoint x="530" y="287" />
+        <di:waypoint x="600" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0n3p774_di" bpmnElement="Flow_0n3p774">
+        <di:waypoint x="390" y="287" />
+        <di:waypoint x="430" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tpwo0t_di" bpmnElement="Flow_0tpwo0t">
+        <di:waypoint x="1090" y="287" />
+        <di:waypoint x="1202" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1fp17al_di" bpmnElement="SequenceFlow_1fp17al">
+        <di:waypoint x="228" y="287" />
+        <di:waypoint x="290" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="192" y="269" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0x6ir2l_di" bpmnElement="EndEvent_0x6ir2l">
+        <dc:Bounds x="1202" y="269" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11e375x_di" bpmnElement="Activity_0ldcbub">
+        <dc:Bounds x="290" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0825meb_di" bpmnElement="Activity_0zdeqjl">
+        <dc:Bounds x="430" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vidiik_di" bpmnElement="Activity_0vidiik" isExpanded="true">
+        <dc:Bounds x="600" y="180" width="490" height="207" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0phiw1h_di" bpmnElement="Flow_0phiw1h">
+        <di:waypoint x="970" y="287" />
+        <di:waypoint x="1002" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1iq05t0_di" bpmnElement="Flow_1iq05t0">
+        <di:waypoint x="810" y="287" />
+        <di:waypoint x="870" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ubmgho_di" bpmnElement="Flow_0ubmgho">
+        <di:waypoint x="658" y="287" />
+        <di:waypoint x="710" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0cdbc80_di" bpmnElement="Event_0cdbc80">
+        <dc:Bounds x="622" y="269" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_15qzlra_di" bpmnElement="Event_15qzlra">
+        <dc:Bounds x="1002" y="269" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11alagn_di" bpmnElement="Activity_0tdkoqo">
+        <dc:Bounds x="710" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1aa02z6_di" bpmnElement="Activity_00t4744">
+        <dc:Bounds x="870" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_159diyy_di" bpmnElement="Association_159diyy">
+        <di:waypoint x="326" y="247" />
+        <di:waypoint x="308" y="197" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0urhv1e_di" bpmnElement="Association_0urhv1e">
+        <di:waypoint x="464" y="247" />
+        <di:waypoint x="447" y="205" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_07snpf0_di" bpmnElement="Association_07snpf0">
+        <di:waypoint x="743" y="180" />
+        <di:waypoint x="724" y="160" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0ouxjga" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.0.0">
+  <bpmn:process id="TARDIS" isExecutable="true" camunda:isStartableInTasklist="false">
+    <bpmn:startEvent id="StartEvent_1" name="Doctor Needs the TARDIS" camunda:asyncAfter="true">
+      <bpmn:outgoing>Flow_0whtt5m</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1g28z2i" messageRef="Message_02y7ff3" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0whtt5m" sourceRef="StartEvent_1" targetRef="Activity_0ymmsvh" />
+    <bpmn:sequenceFlow id="Flow_16dcvsj" sourceRef="Activity_0ymmsvh" targetRef="Gateway_180al81" />
+    <bpmn:serviceTask id="Activity_0ymmsvh" name="Activate Chameleon circuit" camunda:delegateExpression="#{activeateChameleonCircuit}">
+      <bpmn:incoming>Flow_0whtt5m</bpmn:incoming>
+      <bpmn:outgoing>Flow_16dcvsj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_08g1h1u" name="Chameleon circuit Broken" attachedToRef="Activity_0ymmsvh">
+      <bpmn:outgoing>Flow_0s6j7vj</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_09se7ut" errorRef="Error_0k1zi09" />
+    </bpmn:boundaryEvent>
+    <bpmn:exclusiveGateway id="Gateway_180al81">
+      <bpmn:incoming>Flow_16dcvsj</bpmn:incoming>
+      <bpmn:incoming>Flow_0s6j7vj</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kdx39t</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1kdx39t" sourceRef="Gateway_180al81" targetRef="Activity_1awd60u" />
+    <bpmn:sequenceFlow id="Flow_0s6j7vj" sourceRef="Event_08g1h1u" targetRef="Gateway_180al81" />
+    <bpmn:sequenceFlow id="Flow_0eaw6iq" sourceRef="Event_14g482h" targetRef="Event_00vnp8w" />
+    <bpmn:intermediateCatchEvent id="Event_14g482h" name="Time?">
+      <bpmn:incoming>Flow_09i6iat</bpmn:incoming>
+      <bpmn:outgoing>Flow_0eaw6iq</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0t3zkxm">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">#{timeyWimey}</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="Event_00vnp8w" name="Inform Doctor TARDIS has arrived">
+      <bpmn:incoming>Flow_0eaw6iq</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1o5c5hc" messageRef="Message_0j6yfgv" camunda:delegateExpression="#{sendTardis}" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_09i6iat" sourceRef="Activity_1awd60u" targetRef="Event_14g482h" />
+    <bpmn:serviceTask id="Activity_1awd60u" name="Activate Time Circuits">
+      <bpmn:incoming>Flow_1kdx39t</bpmn:incoming>
+      <bpmn:outgoing>Flow_09i6iat</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:error id="Error_0k1zi09" name="ChameleonCircuitBroken" errorCode="ChameleonCircuitBroken" />
+  <bpmn:message id="Message_02y7ff3" name="NEED_TARDIS" />
+  <bpmn:message id="Message_0j6yfgv" name="TARDIS" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TARDIS">
+      <bpmndi:BPMNEdge id="Flow_0whtt5m_di" bpmnElement="Flow_0whtt5m">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16dcvsj_di" bpmnElement="Flow_16dcvsj">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="435" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kdx39t_di" bpmnElement="Flow_1kdx39t">
+        <di:waypoint x="485" y="177" />
+        <di:waypoint x="530" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s6j7vj_di" bpmnElement="Flow_0s6j7vj">
+        <di:waypoint x="350" y="119" />
+        <di:waypoint x="350" y="70" />
+        <di:waypoint x="460" y="70" />
+        <di:waypoint x="460" y="152" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0eaw6iq_di" bpmnElement="Flow_0eaw6iq">
+        <di:waypoint x="718" y="177" />
+        <di:waypoint x="762" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09i6iat_di" bpmnElement="Flow_09i6iat">
+        <di:waypoint x="630" y="177" />
+        <di:waypoint x="682" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1izwpsf_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="155" y="202" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19lag2c_di" bpmnElement="Activity_0ymmsvh">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_180al81_di" bpmnElement="Gateway_180al81" isMarkerVisible="true">
+        <dc:Bounds x="435" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1rn11ar_di" bpmnElement="Event_14g482h">
+        <dc:Bounds x="682" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="685" y="202" width="31" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1b1secf_di" bpmnElement="Event_00vnp8w">
+        <dc:Bounds x="762" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="747" y="202" width="68" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_035taxo_di" bpmnElement="Activity_1awd60u">
+        <dc:Bounds x="530" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0y7bcf2_di" bpmnElement="Event_08g1h1u">
+        <dc:Bounds x="332" y="119" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="355" y="106" width="89" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
