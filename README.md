@@ -17,10 +17,10 @@ First a list is created with all of the doctors and the list is put into the pro
 ```java
 List<String> doctors = new ArrayList<String>();
 
-     doctors.add("Tennant");
-     doctors.add("Jodie");
-     doctors.add("Capaldi");
-     doctors.add("Smith");
+doctors.add("Tennant");
+doctors.add("Jodie");
+doctors.add("Capaldi");
+doctors.add("Smith");
 
 delegateExecution.setVariable("doctors", doctors);
 ```
@@ -35,13 +35,12 @@ String doctor = (String) delegateExecution.getVariableLocal("doctor");
 The message is sent with a payload of ``BussinessKey`` and ``doctor`` in order to ensure we can communicate back to the right message event.
 
 ```java
- delegateExecution.getProcessEngineServices()
+delegateExecution.getProcessEngineServices()
          .getRuntimeService()
          .createMessageCorrelation("NEED_TARDIS")
          .setVariable("BusKey", delegateExecution.getBusinessKey())
          .setVariable("doctor", doctor)
          .correlate();
-
 ```
 
 After all of the messages are sent and the processes have started, the same list of ``doctors`` is used to created a multi sub-process in which we can wait for the responses.
@@ -64,21 +63,20 @@ Random timeLord = new Random();
 int waitTime = timeLord.nextInt(30) + 5;
 
 delegateExecution.setVariable("timeyWimey", "PT"+waitTime+"S");
-
 ```
 
 After the time expires it will use the payload received from the doctor processes i.e. ``BusKey`` and ``doctor`` to send back a message to waiting message catch event.
 
 ```Java
 String BusKey = (String) delegateExecution.getVariable("BusKey");
-       String doctor = (String) delegateExecution.getVariable("doctor");
+String doctor = (String) delegateExecution.getVariable("doctor");
 
-       delegateExecution.getProcessEngineServices()
-               .getRuntimeService()
-               .createMessageCorrelation("TARDIS")
-               .processInstanceBusinessKey(BusKey)
-               .localVariableEquals("doctor", doctor)
-               .correlate();
+delegateExecution.getProcessEngineServices()
+     .getRuntimeService()
+     .createMessageCorrelation("TARDIS")
+     .processInstanceBusinessKey(BusKey)
+     .localVariableEquals("doctor", doctor)
+     .correlate();
 ```
 
 After the message is sent successfully, the process ends.
